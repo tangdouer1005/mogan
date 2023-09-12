@@ -138,6 +138,7 @@ get_current_buffer () {
 url
 get_current_buffer_safe () {
   url v= get_current_view_safe ();
+  //cout << "get_current_buffer_safe" << v << LF;
   if (is_none (v)) return v;
   return concrete_view (v)->buf->buf->name;
 }
@@ -466,6 +467,7 @@ import_tree (url u, string fm) {
 
 bool
 buffer_import (url name, url src, string fm) {
+  cout << "buffer_import :" << name << " " << src << " " << fm << LF;
   tree t= import_tree (src, fm);
   if (t == "error") return true;
   set_buffer_tree (name, t);

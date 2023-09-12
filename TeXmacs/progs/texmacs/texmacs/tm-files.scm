@@ -440,7 +440,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (load-buffer-open name opts)
-  ;;(display* "load-buffer-open " name ", " opts "\n")
+  (display* "load-buffer-open " name ", " opts "\n")
   (cond ((in? :background opts) (noop))
         ((in? :new-window opts)
          (open-buffer-in-window name (buffer-get name) ""))
@@ -456,14 +456,20 @@
   (noop))
 
 (define (load-buffer-load name opts)
-  ;;(display* "load-buffer-load " name ", " opts "\n")
+  (display* "load-buffer-load " name ", " opts "\n")
   (with vname `(verbatim ,(url->system name))
-    (cond ((buffer-exists? name)
+    (cond 
+          ((buffer-exists? name)
            (load-buffer-open name opts))
-          ((url-exists? name)
-           (if (buffer-load name)
+
+          ((url-exists? name)(
+            (display* "here \n")
+            (if (buffer-load name)
                (set-message `(concat "Could not load " ,vname) "Load file")
-               (load-buffer-open name opts)))
+               (load-buffer-open name opts))
+          )
+           )
+
           (else
             (with uname (if (string? name) (string->url name) name)
               (buffer-set-body name '(document ""))
@@ -474,7 +480,7 @@
                            "Load file"))))))
 
 (define (load-buffer-check-permissions name opts)
-  ;;(display* "load-buffer-check-permissions " name ", " opts "\n")
+  (display* "load-buffer-check-permissions " name ", " opts "\n")
   (with vname `(verbatim ,(url->system name))
     (cond ((and (not (url-test? name "f")) (url-exists? name))
            (with msg `(concat "The file " ,vname
@@ -486,7 +492,7 @@
           (else (load-buffer-load name opts)))))
 
 (define (load-buffer-check-autosave name opts)
-  ;;(display* "load-buffer-check-autosave " name ", " opts "\n")
+  (display* "load-buffer-check-autosave " name ", " opts "\n")
   (if (and (autosave-propose name) (nin? :strict opts))
       (with question (if (autosave-rescue? name)
                          "Rescue file from crash?"
@@ -512,10 +518,19 @@
       (if (current-buffer)
           (set! name (url-relative (current-buffer) name))
           (set! name (url-append (url-pwd) name))))
-  (if (and (string=? (url-format name) "pdf") (extract-attachments name))
-    (let* ((tm-name (url-glue (url-relative name (url-basename name)) ".tm")))
-    (if(url-exists? tm-name)
-        (set! name tm-name))))
+
+  (display*  name "\n")
+  (if (string=? (url-format name) "pdf")
+    (let* ((attachments-dir (url-temp-dir))
+            (tm-name (url-glue (url-glue (url-glue attachments-dir "/") (url-basename name)) ".tm")))
+      (display*  attachments-dir ", " tm-name "\n")
+      (if(and (extract-attachments name attachments-dir) (url-exists? tm-name))
+            (set! name tm-name))))
+  
+  (if(url-exists? name)(display*  name "\n"))
+  
+  (display*  (string-load name) "\n")
+
   (load-buffer-check-autosave name opts))
 
 (tm-define (load-buffer name . opts)

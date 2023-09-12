@@ -245,6 +245,7 @@ new_buffer_in_this_window (url name, tree doc) {
 
 url
 new_buffer_in_new_window (url name, tree doc, tree geom) {
+  cout << "new_buffer_in_new_window" << LF;
   if (is_nil (concrete_buffer (name)))
     create_buffer (name, doc);
   url win= new_window (true, geom);

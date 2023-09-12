@@ -27,7 +27,8 @@ using namespace IOBasicTypes;
 #include "tm_debug.hpp"
 
 bool
-extract_attachments_from_pdf (url pdf_path, list<url>& names) {
+extract_attachments_from_pdf (url pdf_path, list<url>& names, url attachments_dir) {
+  attachments_dir = glue (attachments_dir, "/");
   EStatusCode status= PDFHummus::eSuccess;
   InputFile   pdfFile;
   PDFParser   parser;
@@ -116,7 +117,7 @@ extract_attachments_from_pdf (url pdf_path, list<url>& names) {
       }
 
       url attachment_path=
-          relative (pdf_path, url (string (name->GetValue ().c_str ())));
+          glue (attachments_dir, string (name->GetValue ().c_str ()));
       OutputFile attachment_file;
       status= attachment_file.OpenFile (
           std::string (as_charp (as_string (attachment_path))));
@@ -150,7 +151,7 @@ extract_attachments_from_pdf (url pdf_path, list<url>& names) {
 }
 
 bool
-scm_extract_attachments (url pdf_path) {
+scm_extract_attachments (url pdf_path, url attachments_dir) {
   list<url> attachments_paths;
-  return extract_attachments_from_pdf (pdf_path, attachments_paths);
+  return extract_attachments_from_pdf (pdf_path, attachments_paths, attachments_dir);
 }

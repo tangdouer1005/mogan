@@ -30,6 +30,7 @@ function main()
                 cpp_name = "scm_extract_attachments",
                 ret_type = "bool",
                 arg_list = {
+                    "url",
                     "url"
                 }
             },

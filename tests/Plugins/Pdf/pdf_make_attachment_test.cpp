@@ -40,7 +40,7 @@ TestHummusPdfMakeAttachment::test_pdf_hummus_make_single_attachment () {
 
   list<url> attachment;
   bool      separate_tm_judge= extract_attachments_from_pdf (
-      url ("$TEXMACS_PATH/tests/images/29_1_1_attach.pdf"), attachment);
+      url ("$TEXMACS_PATH/tests/images/29_1_1_attach.pdf"), attachment, url ("$TEXMACS_PATH/tests/images"));
   QVERIFY (separate_tm_judge);
 
   QVERIFY (N (attachment) == 1);
@@ -74,7 +74,7 @@ TestHummusPdfMakeAttachment::test_pdf_hummus_make_multiple_attachments () {
 
   list<url> attachments;
   bool      separate_tm_judge= extract_attachments_from_pdf (
-      url ("$TEXMACS_PATH/tests/images/29_4_2_attach.pdf"), attachments);
+      url ("$TEXMACS_PATH/tests/images/29_4_2_attach.pdf"), attachments, url ("$TEXMACS_PATH/tests/images"));
   QVERIFY (separate_tm_judge);
 
   QVERIFY (N (attachments) == 3);
@@ -116,7 +116,7 @@ TestHummusPdfMakeAttachment::test_pdf_hummus_make_zero_attachment () {
 
   list<url> attachment;
   bool      separate_tm_judge= extract_attachments_from_pdf (
-      url ("$TEXMACS_PATH/tests/images/29_4_3_attach.pdf"), attachment);
+      url ("$TEXMACS_PATH/tests/images/29_4_3_attach.pdf"), attachment, url ("$TEXMACS_PATH/tests/images"));
   QVERIFY (!separate_tm_judge);
   QVERIFY (N (attachment) == 0);
 }

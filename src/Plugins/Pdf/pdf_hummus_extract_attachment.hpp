@@ -24,7 +24,7 @@ Extracts attachments from a PDF file.
 attachments.
 @return Returns true if the extraction is successful, false otherwise.
 */
-bool extract_attachments_from_pdf (url pdf_path, list<url>& names);
+bool extract_attachments_from_pdf (url pdf_path, list<url>& names, url attachments_dir);
 
 /**
 
@@ -33,6 +33,6 @@ operations.
 @param pdf_path The path of the PDF file.
 @return Returns true if the extraction is successful, false otherwise.
 */
-bool scm_extract_attachments (url pdf_path);
+bool scm_extract_attachments (url pdf_path, url attachments_dir);
 
 #endif // ifdef PDF_HUMMUS_MAKE_ATTACHMENT_H

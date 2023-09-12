@@ -106,6 +106,7 @@ has_current_view () {
 
 void
 set_current_view (url u) {
+  //cout << "set_current_view" << u << LF;
   tm_view vw= concrete_view (u);
   //ASSERT (is_none (u) || starts (as_string (tail (u)), "no_name") || vw != NULL, "bad view");
   the_view= vw;
@@ -245,7 +246,7 @@ url my_init_buffer_file= url_none ();
 
 url
 get_new_view (url name) {
-  //cout << "Creating new view " << name << "\n";
+  cout << "Creating new view " << name << "\n";
 
   create_buffer (name, tree (DOCUMENT));
   tm_buffer buf= concrete_buffer (name);
@@ -255,16 +256,26 @@ get_new_view (url name) {
   ed->set_data (buf->data);
 
   url temp= get_current_view_safe ();
+  cout << "get_current_view_safe" << LF;
   set_current_view (abstract_view (vw));
+  cout << "set_current_view" << LF;
+  cout << "tm_init_buffer_file " << tm_init_buffer_file << LF;
+  cout << "my_init_buffer_file " << my_init_buffer_file << LF;
   if (is_none (tm_init_buffer_file))
     tm_init_buffer_file= "$TEXMACS_PATH/progs/init-buffer.scm";
   if (is_none (my_init_buffer_file))
     my_init_buffer_file= "$TEXMACS_HOME_PATH/progs/my-init-buffer.scm";
+  cout << "tm_init_buffer_file " << tm_init_buffer_file  << LF;
+  cout << "my_init_buffer_file " << my_init_buffer_file  << LF;
+  
   if (exists (tm_init_buffer_file)) exec_file (tm_init_buffer_file);
+  cout << "tm_init_buffer_file" << LF;
   if (exists (my_init_buffer_file)) exec_file (my_init_buffer_file);
+  cout << "my_init_buffer_file" << LF;
+  
   set_current_view (temp);
 
-  //cout << "View created " << abstract_view (vw) << "\n";
+  cout << "View created " << abstract_view (vw) << "\n";
   return abstract_view (vw);
 }
 
@@ -273,8 +284,10 @@ get_passive_view (url name) {
   // Get a view on a buffer, but not one which is attached to a window
   // Create a new view if no such view exists
   tm_buffer buf= concrete_buffer_insist (name);
+  cout << "concrete_buffer_insist " << LF;
   if (is_nil (buf)) return url_none ();
   array<url> vs= buffer_to_views (name);
+  cout << "buffer_to_views " << LF;
   for (int i=0; i<N(vs); i++) {
     url win= view_to_window (vs[i]);
     if (is_none (win)) return vs[i];
@@ -396,15 +409,18 @@ window_set_view (url win_u, url new_u, bool focus) {
 
 void
 switch_to_buffer (url name) {
-  //cout << "Switching to buffer " << name << "\n";
+  cout << "Switching to buffer " << name << "\n";
   url u= get_passive_view (name);
+  cout << "get_passive_view" << LF;
   tm_view vw= concrete_view (u);
+  cout << "concrete_view" << LF;
   if (vw == NULL) return;
   window_set_view (get_current_window (), u, true);
+  cout << "window_set_view" << LF;
   tm_window nwin= vw->win;
   if (nwin != NULL)
     nwin->set_window_zoom_factor (nwin->get_window_zoom_factor ());
-  //cout << "Switched to buffer " << vw->buf->buf->name << "\n";
+  cout << "Switched to buffer " << vw->buf->buf->name << "\n";
 }
 
 void

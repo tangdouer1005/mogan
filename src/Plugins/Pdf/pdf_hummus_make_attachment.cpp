@@ -79,10 +79,6 @@ pdf_hummus_make_attachments (url pdf_path, list<url> attachment_paths,
     if (DEBUG_CONVERT) debug_convert << pdf_path << " has not existed\n";
     return false;
   }
-  if (is_regular (out_path)) {
-    if (DEBUG_CONVERT) debug_convert << out_path << " has existed\n";
-    return false;
-  }
 
   PDFWriter   pdfWriter;
   EStatusCode status;
